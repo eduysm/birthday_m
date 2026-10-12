@@ -85,21 +85,24 @@ main>*{pointer-events:auto}
 .etiqueta b{display:block;font-size:1.1rem}.etiqueta span{font-size:.9rem;opacity:.85}
 
 /* Foto dump */
-#montonPolaroids{position:relative;width:min(100%,calc(66vh*.78));aspect-ratio:.78;margin:18px auto 10px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.polaroid{position:absolute;inset:0;background:#fff;border:var(--borde);border-radius:14px;box-shadow:var(--sombra);padding:12px 12px 0;display:flex;flex-direction:column;cursor:grab;will-change:transform}
+#montonPolaroids{position:relative;width:min(100%,calc(68vh*.8));aspect-ratio:.8;margin:18px auto 10px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.polaroid{position:absolute;top:0;left:0;width:100%;height:100%;background:#fff;border:var(--borde);border-radius:14px;box-shadow:var(--sombra);padding:12px 12px 0;display:flex;flex-direction:column;cursor:grab;will-change:transform}
 .polaroid .foto{flex:1;min-height:0;border:3px solid var(--tinta);border-radius:8px;overflow:hidden;background:var(--lila-claro);display:grid;place-items:center;font-size:3rem}
-.polaroid .foto img,.polaroid .foto video{width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
-.polaroid .mensaje{height:26%;display:grid;place-items:center;padding:6px 6px 10px;font-family:'Caveat',cursive;font-weight:700;font-size:1.35rem;line-height:1.1;text-align:center}
+.polaroid .foto img,.polaroid .foto video{width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.polaroid .mensaje{height:84px;flex:none;display:grid;place-items:center;padding:6px 6px 10px;font-family:'Caveat',cursive;font-weight:700;font-size:1.35rem;line-height:1.1;text-align:center}
 .polaroid::before{content:"";position:absolute;top:-14px;left:50%;width:84px;height:26px;margin-left:-42px;background:var(--lila);border:3px solid var(--tinta);border-radius:6px;transform:rotate(-4deg);opacity:.92}
 .polaroid:nth-child(3n+1)::before{background:var(--azul);transform:rotate(3deg)}
 .polaroid:nth-child(3n+2)::before{background:var(--rosa-fuerte)}
-.revelado img,.revelado video{width:100%;height:100%;object-fit:cover}
+.revelado img,.revelado video{width:100%;height:100%;object-fit:contain}
 
 /* Rasca */
-.rasca{position:relative;width:100%;aspect-ratio:1.5;border-radius:28px;border:var(--borde);overflow:hidden;margin-bottom:14px;box-shadow:var(--sombra);background:#fff}
+.rasca{position:relative;width:min(100%,calc(62vh*var(--ratio,1.5)));aspect-ratio:var(--ratio,1.5);margin-left:auto;margin-right:auto;border-radius:28px;border:var(--borde);overflow:hidden;margin-bottom:14px;box-shadow:var(--sombra);background:#fff}
 .revelado{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:14px;background:var(--rosa)}
 .revelado .texto{position:relative;background:#fff;border:3px solid var(--tinta);border-radius:20px;padding:6px 14px;font-weight:800;box-shadow:3px 3px 0 var(--tinta)}
 .revelado .emoji{position:relative;font-size:3rem}
+.revelado.con-media{padding:0;background:#000}
+.revelado.con-media .emoji{position:absolute;top:6px;right:10px;font-size:1.7rem;filter:drop-shadow(2px 2px 0 var(--tinta))}
+.revelado.con-media .texto{position:absolute;left:8px;right:8px;bottom:8px;font-size:.9rem;line-height:1.1;padding:3px 10px;border-width:2.5px;border-radius:14px;box-shadow:2px 2px 0 var(--tinta);width:fit-content;max-width:calc(100% - 16px)}
 .rasca canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab;transition:opacity .5s}
 
 /* Memes */
@@ -111,6 +114,7 @@ main>*{pointer-events:auto}
 .meme .lienzo img,.meme .lienzo video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .meme .arriba,.meme .abajo{position:absolute;left:0;right:0;text-align:center;font-family:'Luckiest Guy',cursive;color:#fff;font-size:1.3rem;text-transform:uppercase;padding:0 10px;line-height:1.05;
   -webkit-text-stroke:2px var(--tinta);paint-order:stroke fill;text-shadow:2px 3px 0 var(--tinta)}
+.meme .abajo.largo{font-size:1.05rem}
 .meme .arriba{top:8px}.meme .abajo{bottom:8px}
 .meme .pie{padding:10px 14px;font-size:1rem;text-align:center;font-weight:700}
 
@@ -235,9 +239,9 @@ main>*{pointer-events:auto}
     <div class="tarjeta">
       <span class="pegatina" style="right:-4px;top:-18px">🎟️</span>
       <h2 class="titulo" style="font-size:2rem">Nivel 2 · Rasca y gana</h2>
-      <p class="nota">Rasca las 3 tarjetas con el dedo.</p>
+      <p class="nota">Rasca todas las tarjetas con el dedo.</p>
       <div id="tarjetasRasca"></div>
-      <p style="margin:0">Reveladas: <b id="contadorRasca">0</b>/3</p>
+      <p style="margin:0">Reveladas: <b id="contadorRasca">0</b>/<span id="totalRasca"></span></p>
     </div>
   </section>
 
@@ -276,15 +280,17 @@ const MENSAJE_FINAL = "25 años de ti y el mundo sigue sin estar preparado. Grac
 
 // Una entrada por polaroid, en orden. Mete las fotos en fotos/dump/ (jpg, png, gif o mp4).
 const FOTO_DUMP = [
-  { archivo:"fotos/foto1.jpeg", mensaje:"Mensaje de ejemplo 1 💜" },
-  { archivo:"fotos/foto2.jpeg", mensaje:"Mensaje de ejemplo 2 ✨" },
-  { archivo:"fotos/foto3.mp4", mensaje:"Mensaje de ejemplo 3 🎀" },
-  { archivo:"fotos/foto4.jpeg", mensaje:"Mensaje de ejemplo 4 🌴" },
+  { archivo:"fotos/dump/dump1.jpeg", mensaje:"Noches de playa con la mejor compañía 🌙" },
+  { archivo:"fotos/dump/dump2.jpeg", mensaje:"Pequeñas, pero ya igual de felices 🧸" },
+  { archivo:"fotos/dump/dump3.jpeg", mensaje:"Cero filtro, mucho caos y ningún arrepentimiento 🍟" },
+  { archivo:"fotos/dump/dump4.jpeg", mensaje:"Hasta el bus mejora si vas tú al lado 🚌💜" },
+  { archivo:"fotos/dump/dump5.jpeg", mensaje:"Si hay vela, hay deseo. Pide uno grande 🕯️✨" },
 ];
 
 const TARJETAS_RASCA = [
   { emoji:"🐑", texto:"Squad goals (con ovejas de testigo)", imagen:"fotos/foto1.jpeg" },
   { emoji:"💅", texto:"Glow-up oficial a los 25", imagen:"fotos/foto2.jpeg" },
+  { emoji:"🎬", texto:"Plot twist: esto también es icónico", imagen:"fotos/foto3.mp4" },
   { emoji:"🌴", texto:"Mood: spa y nada más", imagen:"fotos/foto4.jpeg" },
 ];
 
@@ -293,11 +299,11 @@ const MEMES = [
   { arriba:"Yo diciendo", abajo:"“Solo una copa”", imagen:"memes/meme1.jpeg", pie:"Y a las 4 de la mañana seguíamos allí 😭" },
   { arriba:"Maluma al oír", abajo:"“Muskaan cumple 25”", imagen:"memes/meme2.jpeg", pie:"Baby, hoy se perrea con motivo 🔥" },
   { arriba:"Tú al llegar", abajo:"Y el plan mejora solo", imagen:"memes/meme3.mp4", pie:"Es un hecho científico ✨" },
-  { arriba:"Cuando dicen", abajo:"“Hoy sin gastar”", gato:{ cara:"juez", pelaje:"#ffd6ec" }, pie:"Este gato no se lo cree y yo tampoco 😹" },
-  { arriba:"Cumplir 25", abajo:"¿Crisis? NO. Glow-up", gato:{ cara:"feliz", pelaje:"#e9e0ff" }, pie:"Y lo que te queda 💜" },
-  { arriba:"Mi cara cuando", abajo:"Me dicen que es lunes", gato:{ cara:"llora", pelaje:"#fff" }, pie:"Pero hoy es TU día, así que nada de lunes 🎂" },
-  { arriba:"Yo viendo el precio", abajo:"De la tarta", gato:{ cara:"shock", pelaje:"#a9d8f5" }, pie:"Se paga con cariño (y con spa) 🍰" },
-  { arriba:"Después del cumple", abajo:"Modo siesta activado", gato:{ cara:"dormido", pelaje:"#b9a2f0" }, pie:"Zzz… feliz cumple 😴" },
+  { arriba:"", abajo:"Tú siempre serás la reina", imagen:"memes/meme4.jpeg", pie:"Y la corona no se discute 👑" },
+  { arriba:"", abajo:"Importante: no pedirte nada antes de las 9 am", imagen:"memes/meme5.jpeg", pie:"Reglas de convivencia, artículo 1 ☕" },
+  { arriba:"", abajo:"Esperemos que cuando llegue el indicado le quede claro que el anillo de boda debe ser de oro", imagen:"memes/meme6.jpeg", pie:"My precious… 💍" },
+  { arriba:"", abajo:"Mucha suerte en tu nuevo curso :)", imagen:"memes/meme7.mp4", pie:"Vas a arrasar, como siempre 📚✨" },
+  { arriba:"", abajo:"Además… esperemos que nunca se acaben las reservas mundiales de chocolate 🍫", imagen:"memes/meme8.gif", pie:"Prioridades claras, esto es serio 🍫" },
 ];
 
 const PALABRAS_COMIC = ["¡PUM!","WOW","¡MIAU!","QUEEN","OMG","25!","✨SLAY✨","JAJA","ICONIC"];
@@ -308,7 +314,7 @@ const colores = ['#b9a2f0','#a9d8f5','#ffd6ec','#ff9fcf','#8b6fd6','#ffffff'];
 const progreso = { 1:false, 2:false, 3:false };
 const NIVELES = [
   { id:1, icono:"📸", titulo:"Foto dump", detalle:"Recuerdos y mensajes" },
-  { id:2, icono:"🎟️", titulo:"Rasca y gana", detalle:"Descubre 3 sorpresas" },
+  { id:2, icono:"🎟️", titulo:"Rasca y gana", detalle:"Descubre las sorpresas" },
   { id:3, icono:"😂", titulo:"Meme wall", detalle:"Mira los memes" },
   { id:4, icono:"🎁", titulo:"Final boss", detalle:"Tu regalo" },
 ];
@@ -431,6 +437,7 @@ function mostrarPantalla(id){
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='mapa') dibujarMapa();
   if(id==='nivel1' && !$('#montonPolaroids .polaroid:not([style*="pointer-events"])')) iniciarFotoDump();
+  if(id==='nivel1') reajustarFotoDump?.();
   if(id==='final') lluviaConfeti();
 }
 document.addEventListener('click', evento => {
@@ -492,7 +499,7 @@ function completarNivel(id, mensaje){
   setTimeout(()=>mostrarPantalla('mapa'), 2500);
 }
 
-function cargarMedio(ruta, alCargar){
+function cargarMedio(ruta, alCargar, alFallar){
   const esVideo = /\.(mp4|webm|mov)$/i.test(ruta);
   const medio = esVideo ? document.createElement('video') : new Image();
   if(esVideo){
@@ -502,6 +509,7 @@ function cargarMedio(ruta, alCargar){
   } else {
     medio.onload = () => alCargar(medio);
   }
+  if(alFallar) medio.onerror = alFallar;
   medio.src = ruta;
 }
 
@@ -582,6 +590,8 @@ document.addEventListener('pointerdown', e => { if(Math.random()<.3) mostrarPala
 })();
 
 /* ---------- Nivel 1: Foto dump ---------- */
+let reajustarFotoDump = null;
+const ALTO_MENSAJE_POLAROID = 84;
 function iniciarFotoDump(){
   const monton = $('#montonPolaroids');
   monton.innerHTML = '';
@@ -595,10 +605,31 @@ function iniciarFotoDump(){
     polaroid.style.transform = `rotate(${polaroid.dataset.giro}deg)`;
     polaroid.innerHTML = `<div class="foto">📸</div><div class="mensaje"></div>`;
     $('.mensaje', polaroid).textContent = datos.mensaje;
-    cargarMedio(datos.archivo, medio => { $('.foto', polaroid).textContent = ''; $('.foto', polaroid).appendChild(medio); });
+    cargarMedio(datos.archivo, medio => {
+      polaroid.dataset.ancho = medio.naturalWidth || medio.videoWidth;
+      polaroid.dataset.alto = medio.naturalHeight || medio.videoHeight;
+      $('.foto', polaroid).textContent = ''; $('.foto', polaroid).appendChild(medio);
+      ajustarPolaroids();
+    });
     return polaroid;
   });
+  function ajustarPolaroids(){
+    const anchoCaja = monton.clientWidth, altoCaja = monton.clientHeight;
+    if(!anchoCaja) return;
+    polaroids.forEach(polaroid => {
+      const ancho = Number(polaroid.dataset.ancho), alto = Number(polaroid.dataset.alto);
+      if(!ancho || !alto) return;
+      const escala = Math.min((anchoCaja-38)/ancho, (altoCaja-25-ALTO_MENSAJE_POLAROID)/alto);
+      const anchoPolaroid = ancho*escala + 38, altoPolaroid = alto*escala + 25 + ALTO_MENSAJE_POLAROID;
+      Object.assign(polaroid.style, {
+        width:anchoPolaroid+'px', height:altoPolaroid+'px',
+        left:(anchoCaja-anchoPolaroid)/2+'px', top:(altoCaja-altoPolaroid)/2+'px'
+      });
+    });
+  }
+  reajustarFotoDump = ajustarPolaroids;
   [...polaroids].reverse().forEach(polaroid => monton.appendChild(polaroid));
+  ajustarPolaroids();
   const polaroidSuperior = () => polaroids[vistas];
 
   function lanzar(direccion){
@@ -646,22 +677,33 @@ function iniciarRasca(){
   const contenedor = $('#tarjetasRasca');
   contenedor.innerHTML = '';
   let reveladas = 0;
+  $('#contadorRasca').textContent = 0;
+  $('#totalRasca').textContent = TARJETAS_RASCA.length;
   TARJETAS_RASCA.forEach(datos => {
     const caja = document.createElement('div');
     caja.className = 'rasca';
-    caja.innerHTML = `<div class="revelado"><div class="emoji">${datos.emoji}</div><div class="texto">${datos.texto}</div></div><canvas></canvas>`;
-    if(datos.imagen){
-      cargarMedio(datos.imagen, medio => { $('.revelado',caja).prepend(medio); medio.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover'; });
-    }
+    caja.innerHTML = `<div class="revelado"><div class="emoji">${datos.emoji}</div><div class="texto">${datos.texto}</div></div>`;
     contenedor.appendChild(caja);
-    prepararLienzoRasca($('canvas', caja), () => {
-      reveladas++; $('#contadorRasca').textContent = reveladas;
-      const limites = caja.getBoundingClientRect();
-      explotarConfeti(limites.left+limites.width/2, limites.top+limites.height/2, 60);
-      if(reveladas===TARJETAS_RASCA.length) completarNivel(2,'¡Todo revelado! 🎟️✨');
-    });
+
+    const terminarTarjeta = () => {
+      const lienzo = document.createElement('canvas');
+      caja.appendChild(lienzo);
+      prepararLienzoRasca(lienzo, () => {
+        reveladas++; $('#contadorRasca').textContent = reveladas;
+        const limites = caja.getBoundingClientRect();
+        explotarConfeti(limites.left+limites.width/2, limites.top+limites.height/2, 60);
+        if(reveladas===TARJETAS_RASCA.length) completarNivel(2,'¡Todo revelado! 🎟️✨');
+      });
+    };
+    if(!datos.imagen) return terminarTarjeta();
+    cargarMedio(datos.imagen, medio => {
+      const proporcion = (medio.naturalWidth || medio.videoWidth) / (medio.naturalHeight || medio.videoHeight);
+      caja.style.setProperty('--ratio', proporcion);
+      $('.revelado', caja).classList.add('con-media');
+      $('.revelado', caja).prepend(medio);
+      terminarTarjeta();
+    }, terminarTarjeta);
   });
-  $('#contadorRasca').textContent = 0;
 }
 function prepararLienzoRasca(lienzo, alTerminar){
   requestAnimationFrame(()=>{
@@ -706,7 +748,7 @@ function iniciarMemes(){
   MEMES.forEach(meme => {
     const tarjeta = document.createElement('div');
     tarjeta.className = 'meme';
-    tarjeta.innerHTML = `<div class="lienzo"><span class="emoji">${meme.gato ? gatoSVG(meme.gato) : (meme.emoji ?? '')}</span><div class="arriba">${meme.arriba}</div><div class="abajo">${meme.abajo}</div></div><div class="pie">👆 Toca para ver</div>`;
+    tarjeta.innerHTML = `<div class="lienzo"><span class="emoji">${meme.gato ? gatoSVG(meme.gato) : (meme.emoji ?? '')}</span>${meme.arriba ? `<div class="arriba">${meme.arriba}</div>` : ''}<div class="abajo${meme.abajo.length>40?' largo':''}">${meme.abajo}</div></div><div class="pie">👆 Toca para ver</div>`;
     if(meme.imagen){
       cargarMedio(meme.imagen, medio => { $('.emoji',tarjeta).remove(); $('.lienzo',tarjeta).prepend(medio); });
     }
@@ -769,6 +811,7 @@ botonRegalo.addEventListener('click', e => {
   botonRegalo.href = ENLACE_SPA;
   lluviaConfeti();
 });
+addEventListener('resize', () => reajustarFotoDump?.());
 addEventListener('resize', () => { if(botonRegalo.classList.contains('huye')) colocarBotonDentroDePantalla(); });
 
 /* ---------- Inicio ---------- */
