@@ -209,7 +209,7 @@ main>*{pointer-events:auto}
       </h1>
       <p class="titulo veintecinco">25</p>
       <p class="titulo" style="font-size:2.3rem;color:var(--rosa);margin:0 0 8px">Muskaan!</p>
-      <p class="nota">Hoy no se admite ser adulta. Hoy se juega. 💜</p>
+      <p class="nota">A mitad de camino de los 30 🌚 </p>
       <button class="boton" id="botonEmpezar">¡Empezar! 🎀</button>
       <p class="nota" style="margin:10px 0 0;font-size:1.15rem">(sube el volumen, que hay reggaetón)</p>
     </div>
@@ -274,17 +274,22 @@ main>*{pointer-events:auto}
 
 <script>
 /* ============ CONFIGURACIÓN (edita aquí) ============ */
-const ENLACE_SPA = "https://example.com/spa-muskaan";
+const ENLACE_SPA = "Cheque-regalo-PGC-DESS-5315B8FC.pdf";
 
 const MENSAJE_FINAL = "25 años de ti y el mundo sigue sin estar preparado. Gracias por ser de esas personas que hacen que todo plan sea mejor. Este regalo es para que por fin descanses un rato. Con mucho cariño 💜";
 
 // Una entrada por polaroid, en orden. Mete las fotos en fotos/dump/ (jpg, png, gif o mp4).
 const FOTO_DUMP = [
-  { archivo:"fotos/dump/dump1.jpeg", mensaje:"Noches de playa con la mejor compañía 🌙" },
-  { archivo:"fotos/dump/dump2.jpeg", mensaje:"Pequeñas, pero ya igual de felices 🧸" },
-  { archivo:"fotos/dump/dump3.jpeg", mensaje:"Cero filtro, mucho caos y ningún arrepentimiento 🍟" },
+  { archivo:"fotos/dump/dump1.jpeg", mensaje:"San Juan ya es tradición 💗🎆" },
+  { archivo:"fotos/dump/dump2.jpeg", mensaje:"Nuestra versión tóxica, hemos madurado" },
+  { archivo:"fotos/dump/dump3.jpeg", mensaje:"Mojitos sin alcohol" },
   { archivo:"fotos/dump/dump4.jpeg", mensaje:"Hasta el bus mejora si vas tú al lado 🚌💜" },
   { archivo:"fotos/dump/dump5.jpeg", mensaje:"Si hay vela, hay deseo. Pide uno grande 🕯️✨" },
+  { archivo:"fotos/dump/dump6.jpeg", mensaje:"Amigas desde la niñez: de las que no se sueltan nunca 🫶" },
+  { archivo:"fotos/dump/dump7.jpeg", mensaje:"Golden hour, porque brillas con cualquier luz 🌅✨" },
+  { archivo:"fotos/dump/dump8.jpeg", mensaje:"Los mejores planes son un paseo y buena compañía 🚶‍♀️💜" },
+  { archivo:"fotos/dump/dump9.jpeg", mensaje:"La cumpleañera, la reina del día 👑🎂" },
+  { archivo:"fotos/dump/dump10.jpeg", mensaje:"Siempre es agradable el tiempo contigo 💜" },
 ];
 
 const TARJETAS_RASCA = [
@@ -292,11 +297,16 @@ const TARJETAS_RASCA = [
   { emoji:"💅", texto:"Glow-up oficial a los 25", imagen:"fotos/foto2.jpeg" },
   { emoji:"🎬", texto:"Plot twist: esto también es icónico", imagen:"fotos/foto3.mp4" },
   { emoji:"🌴", texto:"Mood: spa y nada más", imagen:"fotos/foto4.jpeg" },
+  { emoji:"✈️", texto:"Viajes que se quedan para siempre", imagen:"fotos/foto5.jpeg" },
+  { emoji:"🌿", texto:"Los paseos improvisados son los mejores", imagen:"fotos/foto6.jpeg" },
+  { emoji:"🚶‍♀️", texto:"Caminando sin rumbo", imagen:"fotos/foto7.jpeg" },
+  { emoji:"🍔", texto:"¿Unas hamburguesitas o qué?", imagen:"fotos/foto8.jpeg" },
+  { emoji:"🎉", texto:"¡Muy feliz día!", imagen:"fotos/foto10.jpeg" },
 ];
 
 // gato: cara = feliz | juez | shock | llora | dormido
 const MEMES = [
-  { arriba:"Yo diciendo", abajo:"“Solo una copa”", imagen:"memes/meme1.jpeg", pie:"Y a las 4 de la mañana seguíamos allí 😭" },
+  { arriba:"", abajo:"Min-ho te desea feliz cumpleaños", imagen:"memes/meme1.jpeg", pie:"Y a las 4 de la mañana seguíamos allí 😭" },
   { arriba:"Maluma al oír", abajo:"“Muskaan cumple 25”", imagen:"memes/meme2.jpeg", pie:"Baby, hoy se perrea con motivo 🔥" },
   { arriba:"Tú al llegar", abajo:"Y el plan mejora solo", imagen:"memes/meme3.mp4", pie:"Es un hecho científico ✨" },
   { arriba:"", abajo:"Tú siempre serás la reina", imagen:"memes/meme4.jpeg", pie:"Y la corona no se discute 👑" },
